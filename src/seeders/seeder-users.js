@@ -16,12 +16,13 @@ module.exports = {
         firstName: 'Quan',
         lastName: 'Tran',
         address: 'USA',
-        gender: '1',
-        typeRole: 'ROLE',
-        keyRole: 'R1',
-
+        phoneNumber: '1234567890',
+        gender: true,
+        image: null,
+        roleId: 'R1',
+        positionId: 'P1',
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       }
     ]);
   },
