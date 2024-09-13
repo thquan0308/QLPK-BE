@@ -1,6 +1,7 @@
 
 import bcrypt from 'bcryptjs';
 import db from '../models/index'
+import { where } from 'sequelize';
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -16,7 +17,6 @@ let createNewUser = async (data) => {
                 address: data.address,
                 phoneNumber: data.phoneNumber,
                 gender: data.gender === '1' ? true : false,
-
                 roleId: data.roleId,
 
             })
@@ -40,12 +40,12 @@ let hashUserPassword = (password) => {
 }
 
 let getAllUser = () => {
-    return new Promise(async (resovle, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             let users = db.User.findAll({
                 raw: true
             })
-            resovle(users)
+            resolve(users)
         } catch (e) {
             reject(e)
         }
@@ -53,7 +53,7 @@ let getAllUser = () => {
 }
 
 let getUserInfoById = (userId) => {
-    return new Promise(async (resovle, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             let user = await db.User.findOne({
                 where: { id: userId },
@@ -61,10 +61,10 @@ let getUserInfoById = (userId) => {
             })
 
             if (user) {
-                resovle(user)
+                resolve(user)
             }
             else {
-                resovle({})
+                resolve({})
             }
         } catch (e) {
             reject(e)
@@ -74,7 +74,7 @@ let getUserInfoById = (userId) => {
 }
 
 let updateUserData = (data) => {
-    return new Promise(async (resovle, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             let user = await db.User.findOne({
                 where: { id: data.id }
@@ -87,13 +87,29 @@ let updateUserData = (data) => {
 
                 await user.save()
                 let allUsers = await db.User.findAll()
-                resovle(allUsers)
+                resolve(allUsers)
             } else {
-                resovle()
+                resolve()
             }
 
         } catch (e) {
             console.log(e)
+        }
+    })
+}
+
+let deleteUserById = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { id: userId }
+            })
+            if (user) {
+                await user.destroy()
+            }
+            resolve()
+        } catch (e) {
+            reject(e)
         }
     })
 }
@@ -102,4 +118,5 @@ module.exports = {
     getAllUser: getAllUser,
     getUserInfoById: getUserInfoById,
     updateUserData: updateUserData,
+    deleteUserById: deleteUserById,
 }
